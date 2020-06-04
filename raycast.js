@@ -274,7 +274,11 @@ function render3DProjectedWalls() {
         //Projected wall height
         var wallStripHeight = (TILE_SIZE / correctWallDistance) * distanceProjectionPlane;
 
-        fill('rgba(255, 255, 255, 1.0)');
+        //Calculate the color of the wall
+        var alpha = 170 / correctWallDistance;
+
+        //render a rectangle withy the calculated wall height
+        fill('rgba(255, 255, 255, ' + alpha + ')');
         noStroke();
         rect(
             i * WALL_STRIP_WIDTH,
