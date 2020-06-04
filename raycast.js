@@ -6,7 +6,7 @@ const WINDOW_WIDTH = MAP_NUM_COLS * TILE_SIZE;
 const WINDOW_HEIGHT = MAP_NUM_ROWS * TILE_SIZE;
 
 const FOV_ANGLE = 60 * (Math.PI / 180);
-const WALL_STRIP_WIDTH = 1;
+const WALL_STRIP_WIDTH = 10; //1
 const NUM_RAYS = WINDOW_WIDTH / WALL_STRIP_WIDTH;
 
 const MINIMAP_SCALE_FACTOR = 0.2;
@@ -266,13 +266,13 @@ function render3DProjectedWalls() {
     for(var i = 0; i < NUM_RAYS; i++){
         var ray = rays[i];
 
-        var rayDistance = ray.distance;
+        var correctWallDistance = ray.distance * Math.cos(ray.rayAngle - player.rotationAngle);
 
         //Calculate the distance to the projection plane
         var distanceProjectionPlane = (WINDOW_WIDTH / 2) / Math.tan(FOV_ANGLE / 2);
 
         //Projected wall height
-        var wallStripHeight = (TILE_SIZE / rayDistance) * distanceProjectionPlane;
+        var wallStripHeight = (TILE_SIZE / correctWallDistance) * distanceProjectionPlane;
 
         fill('rgba(255, 255, 255, 1.0)');
         noStroke();
