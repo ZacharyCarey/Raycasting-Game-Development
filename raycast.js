@@ -6,7 +6,7 @@ const WINDOW_WIDTH = MAP_NUM_COLS * TILE_SIZE;
 const WINDOW_HEIGHT = MAP_NUM_ROWS * TILE_SIZE;
 
 const FOV_ANGLE = 60 * (Math.PI / 180);
-const WALL_STRIP_WIDTH = 10; //1
+const WALL_STRIP_WIDTH = 1;
 const NUM_RAYS = WINDOW_WIDTH / WALL_STRIP_WIDTH;
 
 const MINIMAP_SCALE_FACTOR = 0.2;
@@ -111,7 +111,7 @@ class Ray{
         this.isRayFacingLeft = !this.isRayFacingRight;
     }
 
-    cast(columnId){
+    cast(){
         var xintercept, yintercept;
         var xstep, ystep;
 
@@ -138,11 +138,11 @@ class Ray{
         var nextHorzTouchX = xintercept;
         var nextHorzTouchY = yintercept;
 
-        if (this.isRayFacingUp) nextHorzTouchY--;
+        //if (this.isRayFacingUp) nextHorzTouchY--;
 
         //Increment xstep and ystep until we find a wall
         while(nextHorzTouchX >= 0 && nextHorzTouchX <= WINDOW_WIDTH && nextHorzTouchY >= 0 && nextHorzTouchY <= WINDOW_HEIGHT){
-            if(grid.hasWallAt(nextHorzTouchX, nextHorzTouchY)){
+            if(grid.hasWallAt(nextHorzTouchX, nextHorzTouchY - (this.isRayFacingUp ? 1 : 0))){
                 foundHorzWallHit = true;
                 horzWallHitX = nextHorzTouchX;
                 horzWallHitY = nextHorzTouchY;
@@ -178,11 +178,11 @@ class Ray{
         var nextVertTouchX = xintercept;
         var nextVertTouchY = yintercept;
 
-        if (this.isRayFacingLeft) nextVertTouchX--;
+        //if (this.isRayFacingLeft) nextVertTouchX--;
 
         //Increment xstep and ystep until we find a wall
         while(nextVertTouchX >= 0 && nextVertTouchX <= WINDOW_WIDTH && nextVertTouchY >= 0 && nextVertTouchY <= WINDOW_HEIGHT){
-            if(grid.hasWallAt(nextVertTouchX, nextVertTouchY)){
+            if(grid.hasWallAt(nextVertTouchX - (this.isRayFacingLeft ? 1 : 0), nextVertTouchY)){
                 foundVertWallHit = true;
                 vertWallHitX = nextVertTouchX;
                 vertWallHitY = nextVertTouchY;
@@ -244,7 +244,6 @@ function keyReleased() {
 }
 
 function castAllRays() {
-    var columnId = 0;
 
     //start first ray subtracting half of FOV
     var rayAngle = player.rotationAngle - (FOV_ANGLE / 2);
@@ -252,12 +251,11 @@ function castAllRays() {
     rays = [];
 
     //loop all columns casting the rays
-    for (var i = 0; i < NUM_RAYS; i++){
+    for (var col = 0; col < NUM_RAYS; col++){
         var ray = new Ray(rayAngle);
-        ray.cast(columnId);
+        ray.cast();
         rays.push(ray);
         rayAngle += FOV_ANGLE / NUM_RAYS;
-        columnId++;
     }
 }
 
@@ -275,10 +273,12 @@ function render3DProjectedWalls() {
         var wallStripHeight = (TILE_SIZE / correctWallDistance) * distanceProjectionPlane;
 
         //Calculate the color of the wall
-        var alpha = 170 / correctWallDistance;
+        var alpha = 1.0; //170 / correctWallDistance;
+
+        var color = ray.wasHitVertical ? 255 : 180;
 
         //render a rectangle withy the calculated wall height
-        fill('rgba(255, 255, 255, ' + alpha + ')');
+        fill('rgba(' + color + ', ' + color + ', ' + color + ', ' + alpha + ')');
         noStroke();
         rect(
             i * WALL_STRIP_WIDTH,
