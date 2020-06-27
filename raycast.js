@@ -219,26 +219,31 @@ var grid = new Map();
 var player = new Player();
 var rays = [];
 
+const UP = 87 /*UP_ARROW*/;
+const DOWN = 83 /*DOWN_ARROW*/;
+const RIGHT = 68 /*RIGHT_ARROW*/;
+const LEFT = 65 /*LEFT_ARROW*/;
+
 function keyPressed() {
-    if (keyCode == UP_ARROW) {
+    if (keyCode == UP) {
         player.walkDirection = +1;
-    } else if (keyCode == DOWN_ARROW) {
+    } else if (keyCode == DOWN) {
         player.walkDirection = -1;
-    } else if (keyCode == RIGHT_ARROW) {
+    } else if (keyCode == RIGHT) {
         player.turnDirection = +1;
-    } else if (keyCode == LEFT_ARROW) {
+    } else if (keyCode == LEFT) {
         player.turnDirection = -1;
     }
 }
 
 function keyReleased() {
-    if (keyCode == UP_ARROW) {
+    if (keyCode == UP) {
         if(player.walkDirection === +1) player.walkDirection = 0;
-    } else if (keyCode == DOWN_ARROW) {
+    } else if (keyCode == DOWN) {
         if(player.walkDirection === -1) player.walkDirection = 0;
-    } else if (keyCode == RIGHT_ARROW) {
+    } else if (keyCode == RIGHT) {
         if(player.turnDirection === +1) player.turnDirection = 0;
-    } else if (keyCode == LEFT_ARROW) {
+    } else if (keyCode == LEFT) {
         if(player.turnDirection === -1) player.turnDirection = 0;
     }
 }
